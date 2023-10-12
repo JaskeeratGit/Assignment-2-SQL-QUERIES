@@ -1,27 +1,27 @@
-select distinct owner 
+select owner 
 from lists
 
 INTERSECT
 
-SELECT distinct usr
+SELECT usr
 from retweets
 
 UNION
 
-SELECT distinct writer
+SELECT writer
 from tweets
 
 INTERSECT
 
-select  distinct usr 
+select usr 
 from users
 
 intersect 
 
-select distinct writer
+select writer
 from tweets
 
 intersect 
 
-select distinct flwer
+select flwer
 from follows;
