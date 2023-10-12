@@ -1,18 +1,18 @@
 
-select  distinct usr 
+select usr 
 from users
 
 intersect 
 
-select distinct writer
+select writer
 from tweets
 
 intersect 
 
-select distinct flwer
+select flwer
 from follows 
 
 intersect 
 
-select distinct owner 
+select owner 
 from lists;
