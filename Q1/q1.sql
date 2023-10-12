@@ -1,4 +1,4 @@
--- SQLite
+
 select  distinct usr 
 from users
 
