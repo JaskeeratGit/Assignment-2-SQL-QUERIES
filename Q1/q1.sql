@@ -1,27 +1,9 @@
-select owner 
-from lists
-
-INTERSECT
-
-SELECT usr
-from retweets
-
-UNION
-
-SELECT writer
-from tweets
-
-INTERSECT
-
-select usr 
-from users
-
-intersect 
-
-select writer
-from tweets
-
-intersect 
-
-select flwer
-from follows;
+SELECT u.usr
+FROM users u
+JOIN follows f ON u.usr = f.flwer
+JOIN tweets t ON u.usr = t.writer
+WHERE EXISTS (
+    SELECT 1
+    FROM includes i
+    WHERE i.member = u.usr
+)
