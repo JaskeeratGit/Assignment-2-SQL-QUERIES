@@ -9,6 +9,7 @@ WITH JohnDoeFollowers AS
         SELECT usr
         FROM users
         WHERE lower(name) = 'john doe'
+        LIMIT 1
     )
 ),
 ListMembers AS (
