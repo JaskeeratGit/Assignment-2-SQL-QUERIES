@@ -1,3 +1,5 @@
+-- SQLiteasdfasd
+-- SQLite7
 WITH JohnDoeFollowers AS 
 (
     SELECT DISTINCT flwer
