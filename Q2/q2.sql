@@ -9,4 +9,4 @@ select flwee
 from follows 
 where flwer = (select usr
 from users 
-where users.name = 'John Doe')
+where users.name = 'John Doe');
