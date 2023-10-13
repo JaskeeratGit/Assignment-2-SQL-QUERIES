@@ -1,17 +1,18 @@
-
 SELECT u.usr, u.name
-FROM users AS u
-WHERE (
-    SELECT COUNT(DISTINCT t.tdate)
-    FROM tweets AS t
-    WHERE t.writer = u.usr
-) >= 2
-AND NOT EXISTS (
-    SELECT f.flwee
-    FROM follows AS f
-    WHERE LOWER(f.flwer) = 'john doe'
-    EXCEPT
-    SELECT f1.flwee
-    FROM follows AS f1
-    WHERE f1.flwer = u.usr
+FROM users u
+WHERE u.usr != (SELECT usr FROM users WHERE LOWER(name) = 'john doe') -- Exclude John Doe
+AND u.usr IN (
+    SELECT DISTINCT t1.writer
+    FROM tweets t1
+    WHERE t1.writer <> (SELECT usr FROM users WHERE LOWER(name) = 'john doe') -- Exclude John Doe
+    AND t1.writer IN (
+        SELECT DISTINCT t2.writer
+        FROM tweets t2
+        WHERE t2.writer <> (SELECT usr FROM users WHERE LOWER(name) = 'john doe') -- Exclude John Doe
+    )
+)
+AND u.usr IN (
+    SELECT f.flwer
+    FROM follows f
+    WHERE f.flwee = (SELECT usr FROM users WHERE LOWER(name) = 'john doe') -- John Doe's followers
 );
