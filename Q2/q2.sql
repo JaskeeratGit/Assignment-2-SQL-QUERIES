@@ -1,4 +1,4 @@
-SELECT  flwer FROM follows WHERE flwee = 
+SELECT  flwee FROM follows WHERE flwer = 
 (SELECT flwee
 FROM users, follows
 WHERE users.name = 'John Doe'
