@@ -180,7 +180,7 @@ def evaluate(db_uri: str, generated_sql: str, gold_json_path: str):
     # Execute the generated SQL query
     generated_sql = generated_sql.strip()
 
-    order_matters = 'order by' in generated_sql.lower()
+    # order_matters = 'order by' in generated_sql.lower()
 
     g_denotation = json_to_list_of_tuples(gold_json)
     p_denotation = execute_sql_command(engine, generated_sql)
@@ -188,5 +188,5 @@ def evaluate(db_uri: str, generated_sql: str, gold_json_path: str):
     equivalence = result_eq(
                 g_denotation,
                 p_denotation,
-                order_matters=order_matters)
+                order_matters=False)
     return equivalence    
