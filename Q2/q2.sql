@@ -2,8 +2,11 @@ select flwer
 from follows
 where DATE('now','-90 day') <= start_date
 
-intersect
+INTERSECT
 
-select flwee
-from follows, users 
-Where users.name = 'John Doe' and DATE('now','-90 day') >= start_date
+
+select flwee 
+from follows 
+where flwer = (select usr
+from users 
+where users.name = 'John Doe')
