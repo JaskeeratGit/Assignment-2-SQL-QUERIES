@@ -1,8 +1,8 @@
 WITH MonthlyTweetCounts AS (
     SELECT
-        strftime('%Y-%m', tdate) AS month,
-        SUM(CASE WHEN replyto_w IS NULL THEN 1 ELSE 0 END) AS tweets_with_null_reply,
-        SUM(CASE WHEN replyto_w IS NOT NULL THEN 1 ELSE 0 END) AS replies
+        strftime('%m', tdate) AS month,
+        COUNT(CASE WHEN replyto_w IS NULL THEN 1 ELSE NULL END) AS tcnt,
+        COUNT(CASE WHEN replyto_w IS NOT NULL THEN 1 ELSE NULL END) AS rep_cnt
     FROM
         tweets
     WHERE
@@ -12,26 +12,28 @@ WITH MonthlyTweetCounts AS (
 ),
 MonthlyRetweetCounts AS (
     SELECT
-        strftime('%Y-%m', rdate) AS month,
-        COUNT(*) AS retweets
+        strftime('%m', tdate) AS month,
+        COUNT(*) AS ret_cnt
     FROM
         retweets
     WHERE
-        strftime('%Y', rdate) = '2023'
+        strftime('%Y', tdate) = '2023'
     GROUP BY
         month
 )
 SELECT
-    COALESCE(MTC.month, MRC.month) AS month,
-    COALESCE(tweets_with_null_reply, 0) AS tweets_with_null_reply,
-    COALESCE(replies, 0) AS replies,
-    COALESCE(retweets, 0) AS retweets,
-    COALESCE(tweets_with_null_reply, 0) + COALESCE(replies, 0) + COALESCE(retweets, 0) AS total
+    MT.month AS month,
+    COALESCE(tcnt, 0) AS tcnt,
+    COALESCE(rep_cnt, 0) AS rep_cnt,
+    COALESCE(ret_cnt, 0) AS ret_cnt,
+    COALESCE(tcnt, 0) + COALESCE(rep_cnt, 0) + COALESCE(ret_cnt, 0) AS total
 FROM
-    MonthlyTweetCounts MTC
+    (SELECT DISTINCT month FROM MonthlyTweetCounts
+    UNION
+    SELECT DISTINCT month FROM MonthlyRetweetCounts) AS MT
 LEFT JOIN
-    MonthlyRetweetCounts MRC ON MTC.month = MRC.month
-WHERE
-    MTC.month IS NOT NULL OR MRC.month IS NOT NULL
+    MonthlyTweetCounts MTC ON MT.month = MTC.month
+LEFT JOIN
+    MonthlyRetweetCounts MRC ON MT.month = MRC.month
 ORDER BY
     month;
