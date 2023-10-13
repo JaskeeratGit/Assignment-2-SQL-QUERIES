@@ -6,4 +6,4 @@ intersect
 
 select flwee
 from follows, users 
-Where users.name = 'John Doe' and users.usr = flwer and DATE('now','-90 day') >= start_date
+Where users.name = 'John Doe' and DATE('now','-90 day') >= start_date
