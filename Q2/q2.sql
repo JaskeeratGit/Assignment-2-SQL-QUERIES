@@ -1,4 +1,4 @@
-SELECT flwee
+SELECT flwer
 FROM users, follows
 WHERE users.name = 'John Doe'
 and DATE('now', '-90 day') < start_date
