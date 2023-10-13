@@ -2,7 +2,7 @@ SELECT  flwee FROM follows WHERE flwer =
 (SELECT flwee
 FROM users, follows
 WHERE users.name = 'John Doe'
-and DATE('now', '-90 day') < start_date
+and DATE('now', '-90 day') < start_date)
 
 INTERSECT
 
