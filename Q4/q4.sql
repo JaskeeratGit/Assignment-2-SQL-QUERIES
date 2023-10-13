@@ -1,3 +1,21 @@
+SELECT U.usr, U.name
+FROM users U
+WHERE NOT EXISTS (
+    SELECT DISTINCT F2.flwee
+    FROM follows F2
+    WHERE F2.flwer = (
+        SELECT usr
+        FROM users
+        WHERE LOWER(name) = 'john doe'
+    )
+    EXCEPT
+    SELECT F3.flwee
+    FROM follows F3
+    WHERE F3.flwer = U.usr
+)
+
+INTERSECT
+
 SELECT u.usr, u.name
 FROM users u
 WHERE u.usr IN (
@@ -7,18 +25,9 @@ WHERE u.usr IN (
     HAVING COUNT(DISTINCT text) >= 2
 )
 
-INTERSECT
+EXCEPT
 
-SELECT u.usr, u.name
-FROM users u
-WHERE NOT EXISTS (
-    SELECT usr
-    FROM users j
-    WHERE LOWER(j.name) = 'john doe'
-    AND NOT EXISTS (
-        SELECT flwee
-        FROM follows f
-        WHERE f.flwer = u.usr
-        AND f.flwee = j.usr
-    )
-);
+SELECT usr, name
+FROM users
+WHERE lower(name) = 'john doe'
+;
