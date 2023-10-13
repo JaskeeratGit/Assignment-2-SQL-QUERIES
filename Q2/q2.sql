@@ -6,7 +6,7 @@ AND flwer = usr
 
 INTERSECT
 
-SELECT flwee
+SELECT flwer
 FROM follows
 WHERE DATE('now', '-90 day') >= start_date;
 
