@@ -1,16 +1,14 @@
--- SQLiteasdfasd
--- SQLite7
-WITH JohnDoeFollowers AS 
+WITH JohnDoeUsers AS 
 (
-    SELECT DISTINCT flwer
-    FROM follows, users
-    WHERE flwee = 
-    (
-        SELECT usr
-        FROM users
-        WHERE lower(name) = 'john doe'
-        LIMIT 1
-    )
+    SELECT usr
+    FROM users
+    WHERE LOWER(name) = 'john doe'
+),
+JohnDoeFollowers AS 
+(
+    SELECT DISTINCT f.flwer, u.usr
+    FROM follows AS f
+    JOIN JohnDoeUsers AS u ON f.flwee = u.usr
 ),
 ListMembers AS (
     SELECT i.lname, u.usr
@@ -26,11 +24,11 @@ ListMemberCounts AS
 ),
 ListFollowerCounts AS
 (
-SELECT lm.lname, COUNT(DISTINCT CASE WHEN jdf.flwer IS NOT NULL THEN lm.usr END) AS follower_count
+    SELECT lm.lname, COUNT(DISTINCT CASE WHEN jdf.flwer IS NOT NULL THEN lm.usr END) AS follower_count
     FROM ListMembers AS lm
     LEFT JOIN JohnDoeFollowers AS jdf ON lm.usr = jdf.flwer
     GROUP BY lm.lname
-    )
+)
 
 SELECT lfc.lname
 FROM ListMemberCounts AS lmc
