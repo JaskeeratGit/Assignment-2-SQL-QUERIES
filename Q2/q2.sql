@@ -6,7 +6,5 @@ INTERSECT
 
 
 select flwee 
-from follows 
-where flwer = (select usr
-from users 
-where users.name = 'John Doe');
+from follows, users
+where flwer = users.usr and name = 'John Doe' and DATE('now','-90 day') > start_date
