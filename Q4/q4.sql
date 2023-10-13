@@ -17,8 +17,3 @@ WHERE name = 'John Doe')
 GROUP BY usr
 HAVING COUNT(DISTINCT text) >= 2
 
-EXCEPT 
-
-SELECT usr, name
-FROM users
-WHERE users.name = 'John Doe'
