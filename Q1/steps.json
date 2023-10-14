@@ -1,17 +1,28 @@
 {
-    "agent": "ChatGPT",
+    "agent": "na",
     "steps": [
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Let's find the relevant tables",
+    "action": "Relevant tables are tweets, follows and includes",
+    "actionResponse": "na",
+    "observation": "na"
    },
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Let's find id of people who have written tweets and have followers and are in the includes table by writing the query",
+    "action": "SELECT DISTINCT writer
+                FROM tweets
+
+                INTERSECT
+
+                SELECT DISTINCT flwee
+                FROM follows
+
+                INTERSECT
+
+                SELECT DISTINCT member
+                FROM includes;",
+    "actionResponse": "na",
+    "observation": "na"
    }
    ]
 }
