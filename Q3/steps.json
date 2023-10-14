@@ -2,16 +2,61 @@
     "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "",
-    "action": "",
+    "thought": "Lets try it ourselves",
+    "action": "SELECT DISTINCT writer AS usr
+                FROM tweets
+                WHERE text LIKE '%EDMONTON%';
+",
     "actionResponse": "",
-    "observation": ""
+    "observation": "Gives result even when edmonton mentioned less than 3 times"
    },
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Lets try using ChatGPT. Give schema and prompt as follows",
+    "action": "users(usr, name, email, city, timezone)
+                follows(flwer, flwee, start_date)
+                tweets(writer, tdate, text, replyto_w, replyto_d)
+                hashtags(term)
+                mentions(writer, tdate, term)
+                retweets(usr, writer, tdate, rdate)
+                lists(lname, owner)
+                includes(lname, member)
+                
+                Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.
+
+                DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING",
+    "actionResponse": "
+                        I apologize for the oversight in my previous response. To achieve the desired result without using grouping or aggregate functions, you can use a self-join to compare the tweets and mentions for each user. Here's the revised query
+                       SELECT DISTINCT M1.writer AS usr
+                        FROM mentions M1
+                        LEFT JOIN mentions M2 ON M1.writer = M2.writer
+                        LEFT JOIN mentions M3 ON M1.writer = M3.writer
+                        LEFT JOIN follows F ON M1.writer = F.flwee
+                        LEFT JOIN tweets T ON M1.writer = T.writer
+                        WHERE UPPER(M1.term) = 'EDMONTON' 
+                        AND M2.term IS NOT NULL
+                        AND M2.term <> M1.term
+                        AND M3.term IS NOT NULL
+                        AND M3.term <> M1.term
+                        AND F.flwer IS NULL
+                        AND T.text IS NOT NULL
+                        AND T.text LIKE '%Edmonton%';
+",
+    "observation": "It used mentions as a table, we only need text contained in the tweet table itself"
+   },
+    {
+    "thought": "Lets try to correct it using the agent by giving hints",
+    "action": "mentions is a table we are not to use, the text is contained in the tweet only",
+    "actionResponse": "I apologize for the misunderstanding. If you want to find users who have at least three different tweets mentioning "Edmonton" in the tweet text (without using the mentions table), and who have no followers, you can use the following query
+                        SELECT DISTINCT T1.writer AS usr
+                        FROM tweets T1
+                        LEFT JOIN tweets T2 ON T1.writer = T2.writer AND T2.text LIKE '%Edmonton%'
+                        LEFT JOIN tweets T3 ON T1.writer = T3.writer AND T3.text LIKE '%Edmonton%'
+                        LEFT JOIN follows F ON T1.writer = F.flwee
+                        WHERE T1.text LIKE '%Edmonton%'
+                        AND T2.tdate <> T1.tdate
+                        AND T3.tdate <> T1.tdate
+                        AND F.flwer IS NULL;",
+    "observation": "Works and gives output as expected"
    }
    ]
 }
