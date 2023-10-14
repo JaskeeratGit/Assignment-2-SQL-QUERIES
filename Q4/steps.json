@@ -2,19 +2,29 @@
     "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "users(usr, name, email, city, timezone)\n follows(flwer, flwee, start_date)\n tweets(writer, tdate, text, replyto_w, replyto_d)\n hashtags(term)\n mentions(writer, tdate, term)\n retweets(usr, writer, tdate, rdate)\n lists(lname, owner)\n includes(lname, member)\n Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.\n DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING\n 
-
-",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Lets prompt the agent for the query",
+    "action": "give all the people john follows",
+    "actionResponse": "SELECT F.flwee\n FROM follows F\n WHERE F.flwer = (SELECT usr FROM users WHERE LOWER(name) = 'john doe');\n ",
+    "observation": "Incorrect"
    },
    {
-    "thought": "",
-    "action": "",
+    "thought": "Lets be more specific about the schema.",
+    "action": "F.flwer is int type",
+    "actionResponse": "SELECT U.usr, U.name\n FROM users U\n WHERE NOT EXISTS (\n SELECT DISTINCT F2.flwee\n FROM follows F2\n WHERE F2.flwer = (\n SELECT usr\n FROM users\n WHERE LOWER(name) = 'john doe'\n )\n EXCEPT\n SELECT F3.flwee\n FROM follows F3\n WHERE F3.flwer = U.usr\n );\n ",
+    "observation": "Gives correct output"
+   },
+    {
+    "thought": "Lets get people who have made atleast 2 tweets",
+    "action": "Give users and name of people who have made at least 2 tweets",
+    "actionResponse": "SELECT T.writer AS user, U.name\n FROM (\n SELECT writer\n FROM tweets\n GROUP BY writer\n HAVING COUNT(*) >= 2\n ) AS T\n JOIN users U ON T.writer = U.usr;\n ",
+    "observation": "Gives it correctly"
+   },
+    {
+    "thought": "Lets intersect the 2 queries to get the correct answer and exclude john doe",
+    "action": "SELECT U.usr, U.name\n FROM users U\n WHERE NOT EXISTS (\n SELECT DISTINCT F2.flwee\n FROM follows F2\n WHERE F2.flwer = (\n SELECT usr\n FROM users\n WHERE LOWER(name) = 'john doe'\n )\n EXCEPT\n SELECT F3.flwee\n FROM follows F3\n WHERE F3.flwer = U.usr\n )\n INTERSECT\n SELECT u.usr, u.name\n FROM users u\n WHERE u.usr IN (\n SELECT writer\n FROM tweets\n GROUP BY writer\n HAVING COUNT(DISTINCT text) >= 2\n )\n EXCEPT\n SELECT usr, name\n FROM users\n WHERE lower(name) = 'john doe'\n ;",
     "actionResponse": "",
-    "observation": ""
-   }
+    "observation": "Gives the correct output"
+   }    
    ]
 }
    
