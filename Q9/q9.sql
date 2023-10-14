@@ -33,3 +33,4 @@ LEFT JOIN (
     JOIN mentions M ON T.writer = M.writer AND T.tdate = M.tdate
     GROUP BY T.writer, T.tdate
 ) M ON T.writer = M.writer AND T.tdate = M.tdate;
+SELECT * FROM tStat;
