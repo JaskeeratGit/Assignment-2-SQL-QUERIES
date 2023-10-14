@@ -2,16 +2,16 @@
     "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Prompt the agent to try and figure out pieces of query",
+    "action": "Find lists that have more than 6 members, and at least 50% of their members follow John Doe. Make your search case-insensitive. For each such list, return the list name. Hint: you may find common table expressions and subqueries in the FROM clause useful.",
+    "actionResponse": "WITH JohnDoeFollowers AS (\n SELECT DISTINCT f.flwer\n FROM users AS u\n JOIN follows AS f ON u.usr = f.flwer\n WHERE LOWER(u.name) = 'john doe'\n ),\n ListMembersCount AS (\n SELECT li.lname, COUNT(*) AS member_count\n FROM lists AS li\n JOIN includes AS inc ON li.lname = inc.lname\n GROUP BY li.lname\n ),\n ListFollowersCount AS (\n SELECT li.lname, COUNT(DISTINCT f.flwer) AS follower_count\n FROM lists AS li\n JOIN includes AS inc ON li.lname = inc.lname\n JOIN follows AS f ON inc.member = f.flwee\n GROUP BY li.lname\n )\n SELECT lfc.lname\n FROM ListMembersCount AS lmc\n JOIN ListFollowersCount AS lfc ON lmc.lname = lfc.lname\n WHERE lmc.member_count > 6\n AND lfc.follower_count >= (0.5 * lmc.member_count)\n ",
+    "observation": "It does not give the required output, on further inspected turns out johns follwers aren't being selected correctly"
    },
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Correct johnDoeFollowers and other CTE tables and then ask what is to be done",
+    "action": "-- SQLite\n -- SQLiteasdfasd\n -- SQLite7\n WITH JohnDoeFollowers AS\n (\n SELECT DISTINCT flwer\n FROM follows, users\n WHERE flwee =\n (\n SELECT usr\n FROM users\n WHERE lower(name) = 'john doe'\n )\n ),\n ListMembers AS (\n SELECT i.lname, u.usr\n FROM includes AS i\n JOIN users AS u ON LOWER(i.member) = LOWER(u.usr)\n ),\n ListMemberCounts AS\n (\n SELECT li.lname, COUNT(inc.member) AS member_count\n FROM lists AS li\n LEFT JOIN includes AS inc ON li.lname = inc.lname\n GROUP BY li.lname\n ),\n ListFollowerCounts AS\n (\n SELECT lm.lname, COUNT(DISTINCT CASE WHEN jdf.flwer IS NOT NULL THEN lm.usr END) AS follower_count\n FROM ListMembers AS lm\n LEFT JOIN JohnDoeFollowers AS jdf ON lm.usr = jdf.flwer\n GROUP BY lm.lname\n )\n SELECT lfc.lname\n FROM ListMemberCounts AS lmc\n JOIN ListFollowerCounts AS lfc ON lmc.lname = lfc.lname\n WHERE lmc.member_count > 6\n AND lfc.follower_count >= 0.5 * lmc.member_count;\n make this so that we are only account for one user named john doe case insensitively and ignoring the others",
+    "actionResponse": "WITH JohnDoeUsers AS\n (\n SELECT usr\n FROM users\n WHERE LOWER(name) = 'john doe'\n ),\n JohnDoeFollowers AS\n (\n SELECT DISTINCT f.flwer, u.usr\n FROM follows AS f\n JOIN JohnDoeUsers AS u ON f.flwee = u.usr\n ),\n ListMembers AS (\n SELECT i.lname, u.usr\n FROM includes AS i\n JOIN users AS u ON LOWER(i.member) = LOWER(u.usr)\n ),\n ListMemberCounts AS\n (\n SELECT li.lname, COUNT(inc.member) AS member_count\n FROM lists AS li\n LEFT JOIN includes AS inc ON li.lname = inc.lname\n GROUP BY li.lname\n ),\n ListFollowerCounts AS\n (\n SELECT lm.lname, COUNT(DISTINCT CASE WHEN jdf.flwer IS NOT NULL THEN lm.usr END) AS follower_count\n FROM ListMembers AS lm\n LEFT JOIN JohnDoeFollowers AS jdf ON lm.usr = jdf.flwer\n GROUP BY lm.lname\n )\n SELECT lfc.lname\n FROM ListMemberCounts AS lmc\n JOIN ListFollowerCounts AS lfc ON lmc.lname = lfc.lname\n WHERE lmc.member_count > 6\n AND lfc.follower_count >= 0.5 * lmc.member_count;\n ",
+    "observation": "Works well with the test cases given and output expected"
    }
    ]
 }
