@@ -2,7 +2,9 @@
     "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "",
+    "thought": "users(usr, name, email, city, timezone)\n follows(flwer, flwee, start_date)\n tweets(writer, tdate, text, replyto_w, replyto_d)\n hashtags(term)\n mentions(writer, tdate, term)\n retweets(usr, writer, tdate, rdate)\n lists(lname, owner)\n includes(lname, member)\n Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.\n DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING\n 
+
+",
     "action": "",
     "actionResponse": "",
     "observation": ""
