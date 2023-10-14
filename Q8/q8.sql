@@ -22,16 +22,30 @@ MonthlyRetweetCounts AS (
         month
 )
 SELECT
-    COALESCE(MTC.month, MRC.month) AS month,
-    COALESCE(tcnt, 0) AS tcnt,
-    COALESCE(rep_cnt, 0) AS rep_cnt,
-    COALESCE(ret_cnt, 0) AS ret_cnt,
-    COALESCE(tcnt, 0) + COALESCE(rep_cnt, 0) + COALESCE(ret_cnt, 0) AS total
+    COALESCE(MTC.month, MRC.month) AS "month",
+    COALESCE(tcnt, 0) AS "tcnt",
+    COALESCE(rep_cnt, 0) AS "rep_cnt",
+    COALESCE(ret_cnt, 0) AS "ret_cnt",
+    COALESCE(tcnt, 0) + COALESCE(rep_cnt, 0) + COALESCE(ret_cnt, 0) AS "total"
 FROM
     MonthlyTweetCounts MTC
-FULL OUTER JOIN
+LEFT JOIN
     MonthlyRetweetCounts MRC ON MTC.month = MRC.month
+
+UNION
+
+SELECT
+    COALESCE(MRC.month, MTC.month) AS "month",
+    COALESCE(tcnt, 0) AS "tcnt",
+    COALESCE(rep_cnt, 0) AS "rep_cnt",
+    COALESCE(ret_cnt, 0) AS "ret_cnt",
+    COALESCE(tcnt, 0) + COALESCE(rep_cnt, 0) + COALESCE(ret_cnt, 0) AS "total"
+FROM
+    MonthlyTweetCounts MTC
+RIGHT JOIN
+    MonthlyRetweetCounts MRC ON MTC.month = MRC.month
+
 WHERE
     (tcnt > 0 OR rep_cnt > 0)
 ORDER BY
-    month;
+    "month";
