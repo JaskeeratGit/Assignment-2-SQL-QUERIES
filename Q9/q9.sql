@@ -1,4 +1,4 @@
-DROP VIEW tStat;
+
 CREATE VIEW tStat AS
 SELECT
     T.writer,
