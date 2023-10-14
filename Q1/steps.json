@@ -9,18 +9,7 @@
    },
    {
     "thought": "Let's find id of people who have written tweets and have followers and are in the includes table by writing the query",
-    "action": "SELECT DISTINCT writer
-                FROM tweets
-
-                INTERSECT
-
-                SELECT DISTINCT flwee
-                FROM follows
-
-                INTERSECT
-
-                SELECT DISTINCT member
-                FROM includes;",
+    "action": "SELECT DISTINCT writer FROM tweets INTERSECT SELECT DISTINCT flwee FROM follows INTERSECT SELECT DISTINCT member FROM includes",
     "actionResponse": "na",
     "observation": "na"
    }
