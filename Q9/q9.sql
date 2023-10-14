@@ -1,3 +1,4 @@
+DROP VIEW tStat;
 CREATE VIEW tStat AS
 SELECT
     T.writer,
@@ -5,7 +6,7 @@ SELECT
     T.text,
     COALESCE(C.rep_cnt, 0) AS rep_cnt,
     COALESCE(R.ret_cnt, 0) AS ret_cnt,
-    COALESCE(M.sim_cnt, 0) AS sim_cnt
+    MAX(COALESCE(M.sim_cnt, 0)) AS sim_cnt
 FROM tweets T
 LEFT JOIN (
     SELECT
@@ -30,16 +31,9 @@ LEFT JOIN (
         T.tdate,
         COUNT(*) AS sim_cnt
     FROM tweets T
-    WHERE EXISTS (
-        SELECT 1
-        FROM mentions M
-        WHERE T.writer = M.writer
-          AND T.tdate = M.tdate
-          AND M.term IN (
-              SELECT DISTINCT term
-              FROM hashtags
-          )
-    )
+    JOIN mentions M ON T.writer = M.writer AND T.tdate = M.tdate
     GROUP BY T.writer, T.tdate
-) M ON T.writer = M.writer AND T.tdate = M.tdate;
-SELECT * from tstat;
+) M ON T.writer = M.writer AND T.tdate = M.tdate
+GROUP BY T.writer, T.tdate, T.text;
+
+SELECT * from tStat;
