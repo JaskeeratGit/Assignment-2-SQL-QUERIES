@@ -5,8 +5,7 @@
     "thought": "Lets try it ourselves",
     "action": "SELECT DISTINCT writer AS usr
                 FROM tweets
-                WHERE text LIKE '%EDMONTON%';
-",
+                WHERE text LIKE '%EDMONTON%';",
     "actionResponse": "",
     "observation": "Gives result even when edmonton mentioned less than 3 times"
    },
@@ -20,12 +19,9 @@
                 retweets(usr, writer, tdate, rdate)
                 lists(lname, owner)
                 includes(lname, member)
-                
                 Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.
-
                 DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING",
-    "actionResponse": "
-                        I apologize for the oversight in my previous response. To achieve the desired result without using grouping or aggregate functions, you can use a self-join to compare the tweets and mentions for each user. Here's the revised query
+    "actionResponse": "I apologize for the oversight in my previous response. To achieve the desired result without using grouping or aggregate functions, you can use a self-join to compare the tweets and mentions for each user. Here's the revised query
                        SELECT DISTINCT M1.writer AS usr
                         FROM mentions M1
                         LEFT JOIN mentions M2 ON M1.writer = M2.writer
