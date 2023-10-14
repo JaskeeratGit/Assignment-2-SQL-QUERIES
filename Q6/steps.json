@@ -2,10 +2,10 @@
     "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "",
-    "action": "",
-    "actionResponse": "",
-    "observation": ""
+    "thought": "Prompting agent with query",
+    "action": "ENFORCED USE OF RANK FUNCTION. Find the top 3 tweets with the largest number of retweets. In case of ties, return all ties. For each tweet, return the id of the writer and the date and the text of the tweet. Use rank function",
+    "actionResponse": "WITH TweetRetweetCounts AS (\n SELECT\n t.writer AS writer_id,\n t.tdate AS tweet_date,\n t.text AS tweet_text,\n COUNT(rt.writer) AS retweet_count\n FROM\n tweets AS t\n LEFT JOIN\n retweets AS rt\n ON\n t.writer = rt.writer AND t.tdate = rt.tdate\n GROUP BY\n t.writer, t.tdate, t.text\n )\n SELECT\n writer_id,\n tweet_date,\n tweet_text\n FROM (\n SELECT\n writer_id,\n tweet_date,\n tweet_text,\n RANK() OVER (ORDER BY retweet_count DESC) AS retweet_rank\n FROM TweetRetweetCounts\n ) RankedTweets\n WHERE\n retweet_rank <= 3;\n ",
+    "observation": "Works as expected "
    },
    {
     "thought": "",
