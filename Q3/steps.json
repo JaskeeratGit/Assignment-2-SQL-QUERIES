@@ -11,17 +11,10 @@
    },
    {
     "thought": "Lets try using ChatGPT. Give schema and prompt as follows",
-    "action": "users(usr, name, email, city, timezone)
-                follows(flwer, flwee, start_date)
-                tweets(writer, tdate, text, replyto_w, replyto_d)
-                hashtags(term)
-                mentions(writer, tdate, term)
-                retweets(usr, writer, tdate, rdate)
-                lists(lname, owner)
-                includes(lname, member)
-                Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.
-                DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING",
-    "actionResponse": "I apologize for the oversight in my previous response. To achieve the desired result without using grouping or aggregate functions, you can use a self-join to compare the tweets and mentions for each user. Here's the revised query
+    "action": "users(usr, name, email, city, timezone)\n follows(flwer, flwee, start_date)\n tweets(writer, tdate, text, replyto_w, replyto_d)\n hashtags(term)\n mentions(writer, tdate, term)\n retweets(usr, writer, tdate, rdate)\n lists(lname, owner)\n includes(lname, member)\n Find the id of users who have at least three different tweets that mention Edmonton in tweet text but have no followers. The match for Edmonton is case-insensitive.\n DO NOT USE AGGREGATE FUNCTIONS OR GROUPING OR NESTING\n 
+
+",
+    "actionResponse": "
                        SELECT DISTINCT M1.writer AS usr
                         FROM mentions M1
                         LEFT JOIN mentions M2 ON M1.writer = M2.writer
