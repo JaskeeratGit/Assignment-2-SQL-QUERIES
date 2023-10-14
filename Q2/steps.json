@@ -1,16 +1,60 @@
 {
-    "agent": "na",
+    "agent": "ChatGPT",
     "steps": [
    {
-    "thought": "",
-    "action": "",
+    "thought": "First, lets try it by ourselves, since the user follows another user for at least 90 days lets write a query for that",
+    "action": "SELECT flwer,flwee
+                FROM follows
+                WHERE DATE('now','-90 day') >= start_date",
     "actionResponse": "",
     "observation": ""
    },
    {
-    "thought": "",
-    "action": "",
+    "thought": "Lets get users followed by John Doe for less than 90 days",
+    "action": "SELECT flwer, flwee
+                FROM follows, users
+                WHERE DATE('now','-90 day') < start_date AND users.name = 'John Doe'",
     "actionResponse": "",
+    "observation": ""
+   },
+    {
+    "thought": "Lets take their intersection and that should give us the answer",
+    "action": "SELECT flwer, flwee
+                FROM follows, users
+                WHERE DATE('now','-90 day') < start_date AND users.name = 'John Doe'
+
+                UNION 
+
+                SELECT flwer,flwee
+                FROM follows
+                WHERE DATE('now','-90 day') >= start_date",
+    "actionResponse": "",
+    "observation": "Gave the user u2 instead"
+    },
+    {
+    "thought": "Lets try ChatGPT instead, give it the schema, and ask specifically what we want",
+    "action": "users(usr, name, email, city, timezone)
+                follows(flwer, flwee, start_date)
+                tweets(writer, tdate, text, replyto_w, replyto_d)
+                hashtags(term)
+                mentions(writer, tdate, term)
+                retweets(usr, writer, tdate, rdate)
+                lists(lname, owner)
+                includes(lname, member)
+
+                Find the id of users who follow another user (say u2) for at least 90 days and that the other user u2 is followed by John Doe for less than 90 days. The matches for John Doe should be case-insensitive. Hint: Check out Date and Time functions in SQLite as well as built-in scalar functions in SQLite.
+
+                use join",
+    "actionResponse": "SELECT DISTINCT u1.usr
+                        FROM users AS u1
+                        JOIN follows AS f1 ON u1.usr = f1.flwer
+                        JOIN users AS u2 ON u2.usr = f1.flwee
+                        JOIN follows AS f2 ON u2.usr = f2.flwer
+                        JOIN users AS johndoe ON LOWER(johndoe.name) = 'john doe'
+                        WHERE f1.start_date <= date('now', '-90 days')
+                        AND f2.start_date > date('now', '-90 days')
+                        AND johndoe.usr = f2.flwee;
+",
     "observation": ""
    }
    ]
