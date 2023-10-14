@@ -28,9 +28,13 @@ SELECT
     COALESCE(ret_cnt, 0) AS ret_cnt,
     COALESCE(tcnt, 0) + COALESCE(rep_cnt, 0) + COALESCE(ret_cnt, 0) AS total
 FROM
-    MonthlyTweetCounts MTC
-FULL OUTER JOIN
-    MonthlyRetweetCounts MRC ON MTC.month = MRC.month
+    (SELECT DISTINCT month FROM MonthlyTweetCounts
+    UNION
+    SELECT DISTINCT month FROM MonthlyRetweetCounts) AS MT
+LEFT JOIN
+    MonthlyTweetCounts MTC ON MT.month = MTC.month
+LEFT JOIN
+    MonthlyRetweetCounts MRC ON MT.month = MRC.month
 WHERE
     (tcnt > 0 OR rep_cnt > 0)
 ORDER BY
